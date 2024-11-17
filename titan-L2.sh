@@ -142,6 +142,61 @@ setup_node() {
 
 
 
+# Function to launch the Titan Node
+launch_node() {
+  echo "Launching Titan Node..."
+
+  # Step 1: Set the LD_LIBRARY_PATH environment variable
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+  echo "LD_LIBRARY_PATH set to: $LD_LIBRARY_PATH"
+  sleep 1
+
+  # Step 2: Start the Titan Edge daemon
+  DAEMON_URL="https://cassini-locator.titannet.io:5000/rpc/v0"
+  echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
+  titan-edge daemon start --init --url $DAEMON_URL
+
+  echo "Titan Node launched successfully!"
+
+  # Call the uni_menu function to display the menu
+  master
+}
+
+
+
+# Function to bind the Titan account
+bind_code() {
+  echo "Binding Titan Account..."
+
+  # Path to the data file
+  DATA_FILE="/root/titan-node/data.txt"
+
+  # Check if the file already exists and contains a BindCode
+  if [ -f "$DATA_FILE" ]; then
+    if grep -q "BindCode=" "$DATA_FILE"; then
+      echo "BindCode is already saved in $DATA_FILE. No changes made."
+      return  # Exit the function
+    fi
+  fi
+
+  sleep 1
+  # Step 1: Prompt user for the Titan account identification code
+  read -p "Enter your Titan account identification code: " BIND_CODE
+
+  # Step 2: Save the BindCode to the file
+  echo "Saving BindCode to $DATA_FILE"
+  mkdir -p "$(dirname "$DATA_FILE")" # Ensure directory exists
+  echo "BindCode=$BIND_CODE" >"$DATA_FILE"
+  
+  sleep 1
+  # Step 3: Bind the Titan account using the provided BindCode
+  echo "Binding Titan account with Device: $BIND_CODE"
+  titan-edge bind --hash="$BIND_CODE" https://api-test1.container1.titannet.io/api/v2/device/binding
+
+  echo "Titan Account BindCode saved successfully!"
+  # Call the uni_menu function to display the menu
+  master
+}
 
 
 
@@ -156,8 +211,8 @@ master() {
     print_info ""
     print_info "1. Install-Dependency"
     print_info "2. Setup-Titan"
-    print_info "3. "
-    print_info "4. "
+    print_info "3. Launch-Node"
+    print_info "4. Bind-Code"
     print_info "5. "
     print_info "6. "
     print_info "7. "
@@ -180,10 +235,10 @@ master() {
             setup_node
             ;;
         3) 
-
+            launch_node
             ;;
         4)
-
+            bind_code
             ;;
         5)
 
