@@ -19,6 +19,10 @@ ________________________________________________________________________________
 
 ______________________________________________________________________________________________________________________________
 
+Note: Please register on the Titan website before setting up the node: [Register here](https://test1.titannet.io/intiveRegister?code=TaVeZi)
+
+______________________________________________________________________________________________________________________________
+
 ## Tool Installation Command
 
 To install the necessary tools for managing your Titan-L2 node, run the following command in your terminal:
@@ -38,26 +42,23 @@ This script helps you manage Titan-L2 node, providing a simple way to set up, ch
 
 
 ## Features
-- **Install Dependencies**: Installs all necessary dependencies like Bitcoin Core, Citrea software, and other packages needed for node setup.
-- **Node Setup**: Prompts the user to configure and start both Bitcoin and Citrea nodes, setting them up in Docker or directly on the machine.
-- **Sync Status Checker**: Checks and displays the synchronization status of the Bitcoin and Citrea nodes, ensuring that both nodes are fully synced with their respective blockchains.
-- **Logs Checker**: Allows you to check the logs for both Bitcoin and Citrea nodes to troubleshoot or monitor their status.
-- **Node Management**: Provides commands to start, stop, or refresh the nodes, making it easy to manage the nodes without requiring manual intervention.
-
+- **Install Dependencies**: Installs necessary software and tools, such as the Titan Edge daemon, libraries, and other required dependencies for the node setup.
+- **Node Setup**: Automates the process of setting up the Titan Node, including downloading and installing the required files, setting environment variables, and configuring the node for operation.
+- **Node Launching**: Starts the Titan Node in daemon mode and connects it to the Titan network for proper synchronization and operation.
+- **Logs Checker**: Saves and displays logs of the Titan Node startup process, helping users track the success or failure of the node launch.
+- **Node Management**: Provides functionality to start, stop, refresh, and bind the node, allowing users to manage the node with ease.
 
 ## Menu Options
 The script offers an interactive menu with the following options:
-1. **Install-Dependency**: Installs the required dependencies, such as Docker, Docker Compose, and any other packages needed to run the nodes.
-2. **Setup-BTC**: Prompts the user to set up the Bitcoin node, including configuration and syncing.
-3. **BTC-Sync-Status**: Checks and displays the synchronization status of the Bitcoin node to ensure it is fully synced.
-4. **BTC-Logs**: Allows you to view the last 100 lines of logs from the Bitcoin node.
-5. **Setup-Citrea**: Guides the user through the setup process for the Citrea node.
-6. **Citrea-Sync-Status**: Displays the sync status of the Citrea node, comparing the head and synced block numbers.
-7. **Citrea-Logs**: Displays the logs for the Citrea node to help identify any issues.
-8. **Stop-Node**: Stops the running nodes (both Bitcoin and Citrea).
-9. **Start-Node**: Starts the nodes if they are not already running.
-10. **Refresh-Node**: Refreshes the nodes' status or configuration.
-11. **Exit**: Exits the script and ends the session.
+1. **Install-Dependencies**: Downloads and installs necessary dependencies, such as Titan Edge and libraries needed to run the node.
+2. **Setup-Node**: Downloads the Titan node binary, extracts it, and places it in the appropriate system directory.
+3. **Launch-Node**: Starts the Titan Edge daemon, connects to the network, and initializes the node.
+4. **Bind-Code**: Prompts the user for their Titan account identification code and binds the node to the network, saving the code to a file for future reference.
+5. **Stop-Node**: Stops the running Titan Node and any associated services.
+6. **Refresh-Node**: Refreshes the node by stopping and starting it again, ensuring it is properly synchronized with the network.
+7. **Check-Logs**: Displays the saved logs of the node launch or operation, helping the user monitor the node's performance.
+8. **Exit**: Exits the script and ends the session.
+
 
 
 
