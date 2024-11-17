@@ -53,7 +53,7 @@ master_fun() {
 install_dependency() {
     print_info "<=========== Install Dependency ==============>"
     print_info "Updating and upgrading system packages, and installing curl..."
-    sudo apt update && sudo apt upgrade -y && sudo apt install git wget curl -y 
+    sudo apt update && sudo apt upgrade -y && sudo apt install git wget jq curl -y 
 
     # Check if Docker is install
     print_info "Installing Docker..."
@@ -80,20 +80,6 @@ install_dependency() {
     # Remove the docker-compose.sh file after installation
     rm -f docker-compose.sh
 
-
-    # Check if geth is installed, if not, install it
-    if ! command -v geth &> /dev/null
-      then
-         print_info "Geth is not installed. Installing now..."
-    
-    # Geth install
-    snap install geth
-    
-    print_info "Geth installation complete."
-    else
-        print_info "Geth is already installed."
-    fi
-
     # Print Docker and Docker Compose versions to confirm installation
     print_info "Checking Docker version..."
     docker --version
@@ -107,6 +93,54 @@ install_dependency() {
 
 
 
+# Function to set up the Titan Node
+setup_node() {
+  echo "Starting Titan Node setup..."
+
+  # Step 1: Create a directory for Titan Node setup
+  NODE_DIR=~/titan-node
+  echo "Creating directory: $NODE_DIR"
+  mkdir -p $NODE_DIR
+  cd $NODE_DIR
+  sleep 1
+  
+  # Step 2: Download Titan Node CLI
+  CLI_URL="https://github.com/Titannet-dao/titan-node/releases/download/v0.1.20/titan-edge_v0.1.20_246b9dd_linux-amd64.tar.gz"
+  echo "Downloading Titan Node CLI from $CLI_URL"
+  wget $CLI_URL
+  sleep 1
+
+  
+  # Step 3: Extract the downloaded file
+  TAR_FILE="titan-edge_v0.1.20_246b9dd_linux-amd64.tar.gz"
+  echo "Extracting $TAR_FILE"
+  tar -zxvf $TAR_FILE
+  sleep 1
+
+  # Step 4: Enter the extracted folder
+  EXTRACTED_DIR="titan-edge_v0.1.20_246b9dd_linux-amd64"
+  echo "Entering directory: $EXTRACTED_DIR"
+  cd $EXTRACTED_DIR
+  sleep 1
+
+  # Step 5: Copy the binary to /usr/local/bin
+  echo "Copying titan-edge binary to /usr/local/bin"
+  sudo cp titan-edge /usr/local/bin
+  sleep 1
+
+  # Step 6: Copy the library to /usr/local/lib
+  LIBRARY_FILE="libgoworkerd.so"
+  echo "Copying $LIBRARY_FILE to /usr/local/lib"
+  sudo cp $LIBRARY_FILE /usr/local/lib
+  sleep 1
+
+  echo "Titan Node setup completed successfully!"
+
+  # Call the uni_menu function to display the menu
+  master
+}
+
+
 
 
 
@@ -117,7 +151,7 @@ install_dependency() {
 # Function to display menu and prompt user for input
 master() {
     print_info "====================================="
-    print_info "   Titan Validator Node Tool Menu    "
+    print_info "   Titan-L2 EDGE Node Tool Menu      "
     print_info "====================================="
     print_info ""
     print_info "1. Install-Dependency"
