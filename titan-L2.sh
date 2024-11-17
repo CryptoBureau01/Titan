@@ -141,7 +141,6 @@ setup_node() {
 }
 
 
-
 # Function to launch the Titan Node
 launch_node() {
   echo "Launching Titan Node..."
@@ -162,12 +161,15 @@ launch_node() {
 
   LOG_FILE="/root/titan-node/titan_node.log"
   
+  # Trap to handle script termination
+  trap 'kill $NODE_PID; exit' SIGINT SIGTERM
+
   while true; do
     echo "Running Titan Node..."
 
     # Start the Titan Edge daemon and capture logs
     titan-edge daemon start --init --url $DAEMON_URL > $LOG_FILE 2>&1 &
-
+    
     # Save the process ID
     NODE_PID=$!
     echo "Titan Node started with PID: $NODE_PID"
@@ -184,7 +186,7 @@ launch_node() {
     echo "Restarting Titan Node..."
   done
 
-  # Call the uni_menu function to display the menu
+  # Call the menu function to display the
   master
 }
 
