@@ -180,7 +180,7 @@ launch_node() {
     kill $NODE_PID
 
     # Wait for a few seconds before restarting
-    sleep 5
+    sleep 2
     echo "Restarting Titan Node..."
   done
 
