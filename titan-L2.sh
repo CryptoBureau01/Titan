@@ -155,7 +155,6 @@ launch_node() {
   DAEMON_URL="https://cassini-locator.titannet.io:5000/rpc/v0"
   echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
 
-  sleep 1
   # Capture the output and logs of the start command
   start_logs=$(titan-edge daemon start --init --url $DAEMON_URL 2>&1)
 
@@ -254,7 +253,6 @@ refresh_node() {
   DAEMON_URL="https://cassini-locator.titannet.io:5000/rpc/v0"
   echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
 
-  sleep 1
   # Capture the output and logs of the start command
   start_logs=$(titan-edge daemon start --init --url $DAEMON_URL 2>&1)
   # Log the output to a log file
