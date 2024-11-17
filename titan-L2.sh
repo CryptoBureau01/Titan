@@ -154,13 +154,31 @@ launch_node() {
   # Step 2: Start the Titan Edge daemon
   DAEMON_URL="https://cassini-locator.titannet.io:5000/rpc/v0"
   echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
-  titan-edge daemon start --init --url $DAEMON_URL
+
+  sleep 1
+  # Capture the output and logs of the start command
+  start_logs=$(titan-edge daemon start --init --url $DAEMON_URL 2>&1)
+
+  # Log the output to a log file
+  LOG_FILE="/root/titan-node/titan_node.log"
+  
+  # Check if the directory exists, if not create it
+  if [ ! -d "/root/titan-node" ]; then
+    mkdir -p /root/titan-node
+  fi
+
+  sleep 1
+  # Save logs to the log file
+  echo "Saving launch logs to $LOG_FILE"
+  echo "Titan Node Launch Logs:" > "$LOG_FILE"
+  echo "$start_logs" >> "$LOG_FILE"
 
   echo "Titan Node launched successfully!"
 
   # Call the uni_menu function to display the menu
   master
 }
+
 
 
 
@@ -200,6 +218,80 @@ bind_code() {
 
 
 
+check_logs() {
+  echo "Checking Titan Node Logs..."
+
+  # Path to the log file
+  LOG_FILE="/root/titan-node/titan_node.log"
+
+  # Check if the log file exists
+  if [ -f "$LOG_FILE" ]; then
+    echo "Displaying logs from $LOG_FILE:"
+    cat "$LOG_FILE"  # Display the contents of the log file
+  else
+    echo "Log file $LOG_FILE does not exist. No logs found."
+  fi
+
+  # Call the uni_menu function to display the menu
+  master
+}
+
+
+refresh_node() {
+  echo "Refreshing Titan Node..."
+
+  # Step 1: Stop the Titan Node
+  echo "Stopping Titan Node..."
+  titan-edge daemon stop
+
+  sleep 1
+  # Step 2: Start the Titan Node again
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+  echo "LD_LIBRARY_PATH set to: $LD_LIBRARY_PATH"
+  sleep 1
+
+  # Step 3: Start the Titan Edge daemon
+  DAEMON_URL="https://cassini-locator.titannet.io:5000/rpc/v0"
+  echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
+
+  sleep 1
+  # Capture the output and logs of the start command
+  start_logs=$(titan-edge daemon start --init --url $DAEMON_URL 2>&1)
+  # Log the output to a log file
+  LOG_FILE="/root/titan-node/titan_node.log"
+  
+  # Check if the directory exists, if not create it
+  if [ ! -d "/root/titan-node" ]; then
+    mkdir -p /root/titan-node
+  fi
+
+  sleep 1
+  # Save logs to the log file
+  echo "Saving launch logs to $LOG_FILE"
+  echo "Titan Node Launch Logs:" > "$LOG_FILE"
+  echo "$start_logs" >> "$LOG_FILE"
+
+  echo "Titan Node refreshed successfully!"
+
+  # Call the uni_menu function to display the menu
+  master
+  
+}
+
+
+stop_node() {
+  echo "Stopping Titan Node..."
+
+  # Command to stop the Titan Edge daemon
+  titan-edge daemon stop
+
+  echo "Titan Node has been stopped successfully!"
+
+  # Call the uni_menu function to display the menu
+  master
+}
+
+
 
 
 
@@ -213,19 +305,17 @@ master() {
     print_info "2. Setup-Titan"
     print_info "3. Launch-Node"
     print_info "4. Bind-Code"
-    print_info "5. "
-    print_info "6. "
-    print_info "7. "
-    print_info "8. "
-    print_info "9. "
-    
+    print_info "5. Logs-Check"
+    print_info "6. Refresh-Node"
+    print_info "7. Stop-Node"
+    print_info "8. Exit"
     print_info ""
     print_info "==============================="
     print_info " Created By : CB-Master "
     print_info "==============================="
     print_info ""
     
-    read -p "Enter your choice (1 or 3): " user_choice
+    read -p "Enter your choice (1 or 8): " user_choice
 
     case $user_choice in
         1)
@@ -241,19 +331,19 @@ master() {
             bind_code
             ;;
         5)
-
+            check_logs
             ;;
         6)
-
+            refresh_node
             ;;
         7)
-
+            stop_node
             ;;
         8)
             exit 0  # Exit the script after breaking the loop
             ;;
         *)
-            print_error "Invalid choice. Please enter 1 or 3 : "
+            print_error "Invalid choice. Please enter 1 or 8 : "
             ;;
     esac
 }
