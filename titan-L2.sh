@@ -150,43 +150,29 @@ launch_node() {
   echo "LD_LIBRARY_PATH set to: $LD_LIBRARY_PATH"
   sleep 1
 
-  # Step 2: Start the Titan Edge daemon
+  # Step 3: Start the Titan Edge daemon
   DAEMON_URL="https://cassini-locator.titannet.io:5000/rpc/v0"
   echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
 
+  # Capture the output and logs of the start command
+  titan-edge daemon start --init --url $DAEMON_URL > /root/titan-node/titan_node.log 2>&1 &
+  # Log the output to a log file
+  LOG_FILE="/root/titan-node/titan_node.log"
+  
   # Check if the directory exists, if not create it
   if [ ! -d "/root/titan-node" ]; then
     mkdir -p /root/titan-node
   fi
 
-  LOG_FILE="/root/titan-node/titan_node.log"
-  
-  # Trap to handle script termination
-  trap 'kill $NODE_PID; exit' SIGINT SIGTERM
+  sleep 1
+  # Save logs to the log file
+  echo "Saving launch logs to $LOG_FILE"
+  echo "Titan Node Launch Logs:" > "$LOG_FILE"
+  echo "$start_logs" >> "$LOG_FILE"
 
-  while true; do
-    echo "Running Titan Node..."
+  echo "Titan Node refreshed successfully!"
 
-    # Start the Titan Edge daemon and capture logs
-    titan-edge daemon start --init --url $DAEMON_URL > $LOG_FILE 2>&1 &
-    
-    # Save the process ID
-    NODE_PID=$!
-    echo "Titan Node started with PID: $NODE_PID"
-    
-    # Allow the node to run for 15-20 minutes
-    sleep 900  # 15 minutes
-    
-    # Stop the node process
-    echo "Stopping Titan Node..."
-    kill $NODE_PID
-
-    # Wait for a few seconds before restarting
-    sleep 2
-    echo "Restarting Titan Node..."
-  done
-
-  # Call the menu function to display the
+  # Call the uni_menu function to display the menu
   master
 }
 
@@ -258,37 +244,55 @@ refresh_node() {
   titan-edge daemon stop
 
   sleep 1
-  # Step 2: Start the Titan Node again
-  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
-  echo "LD_LIBRARY_PATH set to: $LD_LIBRARY_PATH"
-  sleep 1
-
-  # Step 3: Start the Titan Edge daemon
+  
+  # Step 2: Start the Titan Edge daemon
   DAEMON_URL="https://cassini-locator.titannet.io:5000/rpc/v0"
   echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
 
-  # Capture the output and logs of the start command
-  titan-edge daemon start --init --url $DAEMON_URL > /root/titan-node/titan_node.log 2>&1 &
-  # Log the output to a log file
-  LOG_FILE="/root/titan-node/titan_node.log"
-  
   # Check if the directory exists, if not create it
   if [ ! -d "/root/titan-node" ]; then
     mkdir -p /root/titan-node
   fi
 
-  sleep 1
-  # Save logs to the log file
-  echo "Saving launch logs to $LOG_FILE"
-  echo "Titan Node Launch Logs:" > "$LOG_FILE"
-  echo "$start_logs" >> "$LOG_FILE"
-
-  echo "Titan Node refreshed successfully!"
-
-  # Call the uni_menu function to display the menu
-  master
+  LOG_FILE="/root/titan-node/titan_node.log"
   
+  # Trap to handle script termination
+  trap 'kill $NODE_PID; exit' SIGINT SIGTERM
+
+  while true; do
+    echo "Running Titan Node..."
+
+    # Start the Titan Edge daemon and capture logs
+    titan-edge daemon start --init --url $DAEMON_URL > $LOG_FILE 2>&1 &
+    
+    # Save the process ID
+    NODE_PID=$!
+    echo "Titan Node started with PID: $NODE_PID"
+    
+    # Allow the node to run for 15-20 minutes
+    sleep 900  # 15 minutes
+    
+    # Stop the node process
+    echo "Stopping Titan Node..."
+    kill $NODE_PID
+
+    # Wait for a few seconds before restarting
+    sleep 2
+    echo "Restarting Titan Node..."
+  done
+
+  # Call the menu function to display the
+  master
 }
+
+
+
+
+
+
+
+
+
 
 
 stop_node() {
