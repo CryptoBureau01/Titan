@@ -156,7 +156,8 @@ launch_node() {
   echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
 
   # Capture the output and logs of the start command
-  start_logs=$(titan-edge daemon start --init --url $DAEMON_URL 2>&1)
+  # Run the titan-edge daemon in the background and capture logs
+  titan-edge daemon start --init --url $DAEMON_URL > /root/titan-node/titan_node.log 2>&1 &
 
   # Log the output to a log file
   LOG_FILE="/root/titan-node/titan_node.log"
@@ -170,13 +171,19 @@ launch_node() {
   # Save logs to the log file
   echo "Saving launch logs to $LOG_FILE"
   echo "Titan Node Launch Logs:" > "$LOG_FILE"
-  echo "$start_logs" >> "$LOG_FILE"
+
+  # Sleep a bit to allow the daemon to start and log some information
+  sleep 3
+
+  # Echo the latest logs from the log file to give user some feedback
+  tail -n 20 "$LOG_FILE" 
 
   echo "Titan Node launched successfully!"
 
   # Call the uni_menu function to display the menu
   master
 }
+
 
 
 
@@ -254,7 +261,7 @@ refresh_node() {
   echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
 
   # Capture the output and logs of the start command
-  start_logs=$(titan-edge daemon start --init --url $DAEMON_URL 2>&1)
+  titan-edge daemon start --init --url $DAEMON_URL > /root/titan-node/titan_node.log 2>&1 &
   # Log the output to a log file
   LOG_FILE="/root/titan-node/titan_node.log"
   
