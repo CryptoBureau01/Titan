@@ -156,14 +156,16 @@ launch_node() {
 
   # Capture the output and logs of the start command
   titan-edge daemon start --init --url $DAEMON_URL > /root/titan-node/titan_node.log 2>&1 &
-  # Log the output to a log file
-  LOG_FILE="/root/titan-node/titan_node.log"
-  
+
+  sleep 1
   # Check if the directory exists, if not create it
   if [ ! -d "/root/titan-node" ]; then
     mkdir -p /root/titan-node
   fi
 
+  # Log the output to a log file
+  LOG_FILE="/root/titan-node/titan_node.log"
+  
   sleep 1
   # Save logs to the log file
   echo "Saving launch logs to $LOG_FILE"
@@ -175,9 +177,6 @@ launch_node() {
   # Call the uni_menu function to display the menu
   master
 }
-
-
-
 
 
 
@@ -244,15 +243,15 @@ refresh_node() {
   titan-edge daemon stop
 
   sleep 1
+
+  # Step 1: Set the LD_LIBRARY_PATH environment variable
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+  echo "LD_LIBRARY_PATH set to: $LD_LIBRARY_PATH"
+  sleep 1
   
   # Step 2: Start the Titan Edge daemon
   DAEMON_URL="https://cassini-locator.titannet.io:5000/rpc/v0"
   echo "Starting Titan Edge daemon with URL: $DAEMON_URL"
-
-  # Check if the directory exists, if not create it
-  if [ ! -d "/root/titan-node" ]; then
-    mkdir -p /root/titan-node
-  fi
 
   LOG_FILE="/root/titan-node/titan_node.log"
   
